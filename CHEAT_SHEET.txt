@@ -1,0 +1,277 @@
+================================================================================
+                    SESSIONDOCGEN v1.0 - QUICK REFERENCE
+================================================================================
+
+Auto-generate session summaries from tool usage, decisions, and outcomes.
+Built by ATLAS (Team Brain) for IRIS
+
+================================================================================
+                              CLI COMMANDS
+================================================================================
+
+PARSE - Generate report from log files
+--------------------------------------
+python sessiondocgen.py parse <logs> [options]
+
+  <logs>              One or more log files to parse
+  -o, --output        Output file path
+  -f, --format        Output format: markdown, json, text (default: markdown)
+  -n, --name          Session name (default: "Session")
+  --git-diff          Git diff file for file modifications
+  -v, --verbose       Verbose output
+
+Examples:
+  python sessiondocgen.py parse session.log -o report.md
+  python sessiondocgen.py parse day1.log day2.log -n "Week Summary" -o weekly.md
+  python sessiondocgen.py parse session.log -f json -o data.json
+  python sessiondocgen.py parse session.log --git-diff changes.diff -o report.md
+
+
+SUMMARY - Quick summary to stdout
+---------------------------------
+python sessiondocgen.py summary <logs> [options]
+
+  <logs>              Log files to parse
+  -n, --name          Session name
+
+Examples:
+  python sessiondocgen.py summary session.log
+  python sessiondocgen.py summary *.log -n "All Sessions"
+
+
+STATS - Tool usage statistics
+-----------------------------
+python sessiondocgen.py stats <logs>
+
+  <logs>              Log files to analyze
+
+Examples:
+  python sessiondocgen.py stats session.log
+  python sessiondocgen.py stats sessions/*.log
+
+
+MILESTONE - Add milestone to existing report
+--------------------------------------------
+python sessiondocgen.py milestone <title> -r <report> [options]
+
+  <title>             Milestone title
+  -r, --report        JSON report file to update (required)
+  -d, --description   Milestone description
+  -i, --impact        Impact: minor, major, critical (default: minor)
+
+Examples:
+  python sessiondocgen.py milestone "MVP Complete" -r report.json
+  python sessiondocgen.py milestone "Tests Pass" -r data.json -i major
+
+
+================================================================================
+                              PYTHON API
+================================================================================
+
+INITIALIZATION
+--------------
+from sessiondocgen import SessionDocGen
+
+gen = SessionDocGen()
+gen.session_name = "My Session"
+
+
+LOADING DATA
+------------
+# From log file
+gen.load_log_file("session.log")
+
+# From string content
+gen.load_content('<invoke name="read_file"></invoke>')
+
+# From git diff
+gen.load_git_diff(diff_content)
+
+# Set times
+from datetime import datetime
+gen.start_time = datetime(2026, 1, 25, 10, 0, 0)
+gen.end_time = datetime(2026, 1, 25, 14, 30, 0)
+
+
+ADDING ANNOTATIONS
+------------------
+# Add milestone
+gen.add_milestone("Title", "Description", "major")
+# Returns: "MS_0001"
+
+# Add decision
+gen.add_decision("Use Python", "architecture", "Simple and effective")
+# Returns: "DEC_0001"
+
+# Add error solution
+gen.add_error_solution("ImportError...", "dependency", "pip install x", True)
+# Returns: "ERR_0001"
+
+
+GENERATING REPORTS
+------------------
+# Generate markdown
+report = gen.generate_report("markdown", "Session Name")
+
+# Generate JSON
+report = gen.generate_report("json")
+
+# Generate text
+report = gen.generate_report("text")
+
+# Save to file
+gen.save_report("output.md", format="markdown", session_name="Session")
+
+
+GETTING SUMMARY
+---------------
+summary = gen.get_summary()
+# Returns: {
+#   "session_name": "...",
+#   "duration_minutes": 45.5,
+#   "tool_calls": 100,
+#   "files_touched": 12,
+#   "errors": 5,
+#   "errors_resolved": 5,
+#   "decisions": 8,
+#   "milestones": 3
+# }
+
+
+CALCULATING METRICS
+-------------------
+metrics = gen.calculate_metrics()
+# Returns SessionMetrics object with:
+#   - duration_minutes
+#   - total_tool_calls
+#   - successful_tool_calls
+#   - files_created/edited/deleted
+#   - total_lines_added/removed
+#   - errors_encountered/resolved
+#   - decisions_made
+#   - milestones_achieved
+#   - unique_files_touched
+
+
+RESET FOR NEW SESSION
+---------------------
+gen.reset()
+
+
+================================================================================
+                            OUTPUT FORMATS
+================================================================================
+
+MARKDOWN (.md)
+--------------
+- Professional, readable
+- Good for: GitHub, wikis, documentation
+- Includes: Stats table, tool breakdown, file mods, errors, decisions, timeline
+
+JSON (.json)
+------------
+- Machine-readable
+- Good for: APIs, databases, automation
+- Includes: Complete data structure with all fields
+
+TEXT (.txt)
+-----------
+- Plain text
+- Good for: Terminals, emails, simple displays
+- Includes: Summary stats, top tools
+
+
+================================================================================
+                           TOOL CATEGORIES
+================================================================================
+
+Category    | Tools
+------------|-----------------------------------------------
+read        | read_file, list_dir
+write       | write, search_replace, edit_notebook, delete_file
+search      | grep, glob_file_search, codebase_search
+terminal    | run_terminal_cmd
+browser     | browser_navigate, browser_snapshot, browser_click
+web         | web_search
+planning    | todo_write
+memory      | update_memory
+other       | Uncategorized
+
+
+================================================================================
+                           ERROR TYPES
+================================================================================
+
+Type        | Detection Patterns
+------------|-----------------------------------------------
+dependency  | import, module, package, pip
+syntax      | syntax, parse, unexpected token, indent
+build       | build, compile, gradle, npm run, webpack
+network     | network, connection, timeout, socket, http
+permission  | permission, access denied, unauthorized
+runtime     | Default for unmatched
+
+
+================================================================================
+                         DECISION CATEGORIES
+================================================================================
+
+Category    | Keywords
+------------|-----------------------------------------------
+architecture| design, structure, pattern, module
+bug_fix     | fix, bug, error, issue, problem, resolve
+optimization| optimize, performance, speed, efficient, cache
+handoff     | handoff, transition, switch, pass to
+config      | config, configuration, setting, environment
+
+
+================================================================================
+                          QUICK EXAMPLES
+================================================================================
+
+# Basic report
+python sessiondocgen.py parse session.log -o report.md
+
+# Quick check
+python sessiondocgen.py summary session.log
+
+# JSON output
+python sessiondocgen.py parse session.log -f json -o data.json
+
+# Multiple logs
+python sessiondocgen.py parse *.log -o combined.md
+
+# With git diff
+python sessiondocgen.py parse session.log --git-diff changes.diff
+
+# Stats only
+python sessiondocgen.py stats session.log
+
+
+================================================================================
+                           PYTHON ONE-LINERS
+================================================================================
+
+# Quick markdown report
+SessionDocGen().load_log_file("s.log") or gen.save_report("r.md")
+
+# Get tool call count
+len(SessionDocGen().load_content(content) or gen.tool_usages)
+
+# Check for errors
+sum(1 for e in gen.errors if not e.effective)  # Unresolved errors
+
+
+================================================================================
+                              LINKS
+================================================================================
+
+GitHub:     https://github.com/DonkRonk17/SessionDocGen
+README:     README.md
+Examples:   EXAMPLES.md
+License:    MIT
+
+
+================================================================================
+          Built by ATLAS (Team Brain) | Requested by IRIS
+================================================================================

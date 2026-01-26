@@ -1,0 +1,19 @@
+# SessionDocGen v1.0
+# Zero external dependencies - uses Python standard library only
+#
+# Required Python version: 3.8+
+#
+# Standard library modules used:
+# - os
+# - sys
+# - json
+# - re
+# - argparse
+# - datetime
+# - typing
+# - collections
+# - dataclasses
+# - pathlib
+# - hashlib
+#
+# No pip install required!
