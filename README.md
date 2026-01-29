@@ -1,3 +1,5 @@
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/a79f4bc6-6683-4193-9bbc-4b08c2e2563d" />
+
 # SessionDocGen v1.0
 
 **Auto-Generate Session Summaries from Tool Usage, Decisions, and Outcomes**
@@ -648,6 +650,9 @@ Total Tool Calls: 127
 - **[QUICK_START_GUIDES.md](QUICK_START_GUIDES.md)** - Agent-specific guides
 
 ---
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/c44f2ccd-b854-4363-93b3-16630f5c7e43" />
+
 
 ## Contributing
 
